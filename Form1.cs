@@ -1,45 +1,12 @@
 using System.Globalization;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
+using static security_lab2.Alphabet;
 
 namespace security_lab2
 {
     public partial class Form1 : Form
     {
-        private static readonly Regex regP = new Regex(@"^(0[.]\d{0,9}|[01]|0[.])?$", RegexOptions.Compiled);
-        private static readonly Regex regV = new Regex(@"^([1-9][0-9]{0,9})?$", RegexOptions.Compiled);
-        private static readonly Regex regT = new Regex(@"^([1-9][0-9]{0,3})?$", RegexOptions.Compiled);
-
-        private static readonly string l_cap = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private static readonly string l_sm = "abcdefghijklmnopqrstuvwxyz";
-        private static readonly string r_cap = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-        private static readonly string r_sm = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
-        private static readonly string symb = "!@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~";
-        private static readonly string numb = "0123456789";
-
         Generation main = new Generation();
-
-        public class Generation
-        {
-            public double p = 0;
-            public int v = 0, t = 0;
-            public ulong sSm = 0, s = 0;
-            public int a = 0;
-            public int l = 0;
-            public string alph = "";
-
-            public ulong CalcS()
-            {
-                if (p <= 0) return sSm = 0;
-                return sSm = (ulong)Math.Ceiling((v * 60 * 24) * t / p);
-            }
-            public int CalcL()
-            {
-                if (a <= 0) return l = 0;
-                s = (ulong)(t * v * 60 * 24);
-                return l = (int)Math.Ceiling(Math.Log(s, a));
-            }
-        }
 
         public Form1()
         {
@@ -75,51 +42,24 @@ namespace security_lab2
             if (!regT.IsMatch(t_print.Text + e.KeyChar)) e.Handled = true;
         }
 
-        private void UpdateAlphabet()
+        public void UpdateAlphabet()
         {
             int a = 0;
             main.alph = "";
 
-            if (lat_CAP.Checked)
-            {
-                a += 26;
-                main.alph += l_cap;
-            }
-            if (lat_small.Checked)
-            {
-                a += 26;
-                main.alph += l_sm;
-            }
-            if (rus_CAP.Checked)
-            {
-                a += 33;
-                main.alph += r_cap;
-            }
-
-            if (rus_small.Checked)
-            {
-                a += 33;
-                main.alph += r_sm;
-            }
-
-            if (symbols.Checked)
-            {
-                a += 33;
-                main.alph += symb;
-            }
-
-            if (numbers.Checked)
-            {
-                a += 10;
-                main.alph += numb;
-            }
+            if (lat_CAP.Checked) { a += 26; main.alph += l_cap; }
+            if (lat_small.Checked) { a += 26; main.alph += l_sm; }
+            if (rus_CAP.Checked) { a += 33; main.alph += r_cap; }
+            if (rus_small.Checked) { a += 33; main.alph += r_sm; }
+            if (symbols.Checked) { a += 33; main.alph += symb; }
+            if (numbers.Checked) { a += 10; main.alph += numb; }
 
             main.a = a;
             a_print.Text = a.ToString();
             Recalc();
         }
 
-        private void Recalc()
+        public void Recalc()
         {
             if (double.TryParse(p_print.Text, NumberStyles.Float,
                                 CultureInfo.InvariantCulture, out double p)) main.p = p;
